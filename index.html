@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Speed Maths Pro</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://images.gemini.googleusercontent.com/proxy/b_S3Zl_mC8CqBf048X07HofgNisxR0e6V8D5K4kUj0j-I6MhK3WreF0o-1u4-0-Z_5cM_u7R0-Y=w1000-h1000">
+    <link rel="apple-touch-icon" href="https://images.gemini.googleusercontent.com/proxy/b_S3Zl_mC8CqBf048X07HofgNisxR0e6V8D5K4kUj0j-I6MhK3WreF0o-1u4-0-Z_5cM_u7R0-Y=w1000-h1000">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<!-- Red Flash visual feedback for incorrect answers/timeouts -->
+<div id="red-flash" aria-hidden="true"></div>
+
+<!-- Ad banner (optional layout placeholder) -->
+<div id="ad-banner-container" aria-label="Advertisement banner"></div>
+
+<div class="app-shell">
+    <div class="game-arena" id="arena">
+
+        <!-- MENU SCREEN -->
+        <div id="menu-screen" class="screen active">
+            <div class="app-logo">∑</div>
+            <h1 class="welcome-title">Speed Maths Pro</h1>
+            <p class="welcome-subtitle" id="menu-subtitle">Train your brain across 1,000 levels of lightning-fast mental math.</p>
+            <div class="stat-row">
+                <div class="stat-pill">Highest Level<strong id="menu-highest">1</strong></div>
+            </div>
+            <div id="menu-buttons"></div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="game-screen" class="screen">
+            <div class="game-top-bar">
+                <div class="hud-display">
+                    <div class="hud-chip">Level<div id="hud-level">1</div></div>
+                    <div class="hud-chip">Progress<div id="hud-progress">0/15</div></div>
+                    <div class="hud-chip">Score<div id="hud-score">0</div></div>
+                </div>
+                <div class="control-buttons">
+                    <button type="button" class="btn-control" id="sound-btn" aria-label="Toggle Sound" title="Toggle Sound">🔊</button>
+                    <button type="button" class="btn-control" id="pause-btn" aria-label="Pause game" title="Pause">⏸</button>
+                </div>
+            </div>
+
+            <div class="lifelines-row">
+                <span class="lifelines-label">Lifelines</span>
+                <div class="hearts-container">
+                    <span class="heart" id="heart-1">❤️</span>
+                    <span class="heart" id="heart-2">❤️</span>
+                </div>
+            </div>
+
+            <div class="timer-block">
+                <div class="timer-ring-wrap">
+                    <svg viewBox="0 0 72 72" aria-hidden="true">
+                        <circle class="timer-ring-bg" cx="36" cy="36" r="32"></circle>
+                        <circle class="timer-ring-progress safe" id="timer-ring" cx="36" cy="36" r="32"></circle>
+                    </svg>
+                    <div class="timer-value" id="timer-display">15</div>
+                </div>
+            </div>
+
+            <div class="formula-window">
+                <div class="equation" id="equation">—</div>
+            </div>
+
+            <div class="options-layout">
+                <button type="button" class="btn-core" data-index="0"></button>
+                <button type="button" class="btn-core" data-index="1"></button>
+                <button type="button" class="btn-core" data-index="2"></button>
+                <button type="button" class="btn-core" data-index="3"></button>
+            </div>
+        </div>
+
+        <!-- PAUSE MODAL -->
+        <div id="pause-modal" class="modal-overlay">
+            <div class="modal-icon">⏸️</div>
+            <div class="modal-title">Game Paused</div>
+            <div class="modal-desc">Take a breath. Your timer is frozen until you resume.</div>
+            <button type="button" class="btn-action" id="pause-resume-btn">Resume</button>
+            <button type="button" class="btn-action secondary" id="pause-menu-btn">Main Menu</button>
+        </div>
+
+        <!-- LEVEL COMPLETE MODAL -->
+        <div id="level-complete-modal" class="modal-overlay">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">Level Complete!</div>
+            <div class="modal-desc" id="level-complete-desc">You mastered this stage.</div>
+            <button type="button" class="btn-action" id="level-complete-btn">Continue</button>
+        </div>
+
+        <!-- LEVEL FAILED MODAL -->
+        <div id="level-failed-modal" class="modal-overlay">
+            <div class="modal-icon">💔</div>
+            <div class="modal-title">Level Failed</div>
+            <div class="modal-desc" id="level-failed-desc">You ran out of time or lifelines.</div>
+            <button type="button" class="btn-action" id="level-failed-watch-btn">Watch Ad to Continue</button>
+            <button type="button" class="btn-action secondary" id="level-failed-restart-btn">Restart Level</button>
+        </div>
+
+        <!-- MAX LEVEL CONQUERED MODAL -->
+        <div id="max-level-modal" class="modal-overlay">
+            <div class="modal-icon">🏆</div>
+            <div class="modal-title">Champion!</div>
+            <div class="modal-desc">You conquered all 1,000 levels. Incredible achievement!</div>
+            <button type="button" class="btn-action" id="max-level-btn">Play Again</button>
+        </div>
+
+        <!-- REWARDED AD SIMULATOR MODAL OVERLAY -->
+        <div id="ad-simulator-modal" class="modal-overlay">
+            <div class="ad-box">
+                <div class="ad-header">
+                    <span class="ad-tag">SPONSORED ADVERTISEMENT</span>
+                    <button type="button" class="ad-skip-btn" id="ad-skip-btn" disabled>Skip Ad in 3s</button>
+                </div>
+                <div class="ad-content">
+                    <div class="ad-icon">📺</div>
+                    <div class="ad-title">Math Blast Saga</div>
+                    <div class="ad-desc">The ultimate numerical puzzle adventure. Play now for free!</div>
+                    <div class="ad-video-mock">
+                        <div class="ad-progress-bar" id="ad-progress-bar"></div>
+                    </div>
+                </div>
+                <div class="ad-footer">
+                    Watching this ad will grant you <strong>1 Lifeline</strong> to continue.
+                </div>
+            </div>
+        </div>
+        <!-- EXIT CONFIRMATION MODAL -->
+        <div id="exit-confirm-modal" class="modal-overlay">
+            <div class="modal-icon">🚪</div>
+            <div class="modal-title">Exit Game?</div>
+            <div class="modal-desc">Are you sure you want to exit Speed Maths Pro?</div>
+            <button type="button" class="btn-action" id="exit-yes-btn">Exit App</button>
+            <button type="button" class="btn-action secondary" id="exit-no-btn">Cancel</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="gameLogic.js"></script>
+</body>
+</html>
